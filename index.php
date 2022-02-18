@@ -8,15 +8,9 @@ if (!empty($_POST)) {
 
     if ($_POST['action'] == 'inserir') {
         $titulo    = $_POST['titulo'];;
-        $descricao = $_POST['descricao'];
         $concluida = $_POST['concluida'];
 
         if (empty($titulo)) {
-            $error   = true;
-            $message = "Dados inseridos inválidos.";
-        }
-
-        if (empty($descricao)) {
             $error   = true;
             $message = "Dados inseridos inválidos.";
         }
@@ -28,15 +22,15 @@ if (!empty($_POST)) {
 
         if (!$error) {
             $link = mysqli_connect("database", "root", "root", "php_tarefas");
-            mysqli_query($link, "INSERT INTO tarefas (titulo, descricao, concluida) 
-                                VALUES ('" . $titulo . "', '" . $descricao . "', " . $concluida . ")");
+            mysqli_query($link, "INSERT INTO tarefas (titulo, concluida) 
+                                VALUES ('" . $titulo . "', " . $concluida . ")");
 
             if (mysqli_error($link)) {
                 $error = true;
                 $message = "Houve um erro ao inserir a tarefa.";
             } else {
-                $message = "Tarefa inserida com sucesso.";
                 $success = true;
+                $message = "Tarefa inserida com sucesso.";
             }
         }
     } elseif ($_POST['action'] == 'excluir') {
@@ -49,7 +43,7 @@ if (!empty($_POST)) {
             $error = true;
             $message = "Houve um erro ao excluir a tarefa.";
         } else {                
-            $message = "Tarefa deletada com sucesso.";
+            $message = "Tarefa excluída com sucesso.";
             $success = true;
         }
     } elseif ($_POST['action'] == 'done' || $_POST['action'] == 'undone') {
@@ -66,9 +60,9 @@ if (!empty($_POST)) {
 
         if (mysqli_error($link)) {
             $error = true;
-            $message = "Houve um erro ao excluir a tarefa.";
+            $message = "Houve um erro ao alterar status da tarefa.";
         } else {                
-            $message = "Tarefa deletada com sucesso.";
+            $message = "Status da tarefa alterado com sucesso.";
             $success = true;
         }
     }
@@ -80,9 +74,11 @@ function getTarefas() {
     $tarefas = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $tarefas;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Tarefas</title>
@@ -99,20 +95,35 @@ function getTarefas() {
             border-style: solid;
             text-align: center;
         }
+
+        .aviso {
+            border: solid;
+            border-radius: 1em;
+            padding: 0em 0.5em;
+            margin: 0.5em;
+            color: white;
+        }
+
+        .success {
+            border-color: green;
+            background-color: green;
+        }
+
+        .error {
+            border-color: red;
+            background-color: red;
+        }
     </style>
 </head>
+
 <body>
 
     <div>
-        <div style="display: <?=$success ? 'block' : 'none'?>" >
-            <div>
+        <div <?= $success ? 'class="aviso success" style="display: block"' : 'style="display:none"'?> >
                 <p><?=$message?></p>
-            </div>
         </div>
-        <div style="display: <?=$error ? 'block' : 'none'?>" >
-            <div>
+        <div <?= $error ? 'class="aviso error" style="display: block"' : 'style="display:none"'?> >
                 <p><?=$message?></p>
-            </div>
         </div>
     </div>
 
@@ -121,11 +132,7 @@ function getTarefas() {
         <form action="index.php" method="POST">
             <div>
                 <label for="titulo">Titulo:</label><br>
-                <input type="text" name="titulo" required minlength="2" maxlength="255">
-            </div>
-            <div>
-                <label for="titulo">Descricao:</label><br>
-                <input type="text" name="descricao" required minlength="2" maxlength="500">
+                <input type="text" name="titulo"  maxlength="255">
             </div>
             <div>
                 <label for="">Concluída?</label><br>
@@ -157,9 +164,6 @@ function getTarefas() {
                             echo "Titulo";
                         echo "</th>";
                         echo "<th>";
-                            echo "Descrição";
-                        echo "</th>";
-                        echo "<th>";
                             echo "Status";
                         echo "</th>";
                         echo "<th>";
@@ -170,7 +174,6 @@ function getTarefas() {
                         echo "<tr>";
                             echo "<td> {$tarefa['id']} </td>";
                             echo "<td> {$tarefa['titulo']} </td>";
-                            echo "<td> {$tarefa['descricao']} </td>";
                             if ($tarefa['concluida'] == 1) {
                                 echo '<td>
                                         <form action="index.php" method="POST">
