@@ -26,6 +26,6 @@ Divisão de responsabilidade em 3 camadas:
 ### Sobre o projeto desenvolvido
 O projeto implementado no curso é um cadastro de pessoas em um evento, mas para tirar maior proveito dos ensinamentos criei uma aplicação de cadastro de tarefas com base nos ensinamentos do vídeo.
 Foram implementadas diversas maneiras de implementar uma mesma aplicação, desde o padrão procedural até o MVC.
-Para ter acesso aos arquivos navegue entre as branches criadas:
 
+Para ter acesso aos arquivos navegue entre as branches criadas:
 * [v1.0 - bad code](https://github.com/felipeverse/PHP-Arquitetura-De-Software/tree/v1.0-bad_code)
