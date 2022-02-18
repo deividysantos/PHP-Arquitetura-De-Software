@@ -1,12 +1,5 @@
 <?php
 
-if (isset($error) && $error) {
-    echo $message;
-}
-if (isset($success) && $success) {
-    echo $message;
-}
-
 $error   = false;
 $success = false;
 $message = '';
@@ -33,9 +26,8 @@ if (!empty($_POST)) {
 
     if (!$error) {
         $link = mysqli_connect("database", "root", "root", "php_tarefas");
-
         mysqli_query($link, "INSERT INTO tarefas (titulo, descricao, concluida) 
-                             VALUES ('" . $titulo . "', '" . $descricao . "', '" . $concluida . "')");
+                             VALUES ('" . $titulo . "', '" . $descricao . "', " . $concluida . ")");
 
         if (mysqli_error($link)) {
             $error = true;
@@ -54,6 +46,20 @@ if (!empty($_POST)) {
     <title>Lista de Tarefas</title>
 </head>
 <body>
+
+    <div>
+        <div style="display: <?=$success ? 'block' : 'none'?>" >
+            <div>
+                <p><?=$message?></p>
+            </div>
+        </div>
+        <div style="display: <?=$error ? 'block' : 'none'?>" >
+            <div>
+                <p><?=$message?></p>
+            </div>
+        </div>
+    </div>
+
     <div>
         <h2>Cadastro de tarefas</h2>
         <form action="" method="POST">
