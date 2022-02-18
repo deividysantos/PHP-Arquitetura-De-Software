@@ -38,12 +38,33 @@ if (!empty($_POST)) {
         }
     }
 }
+
+function getTarefas() {
+    $link = mysqli_connect("database", "root", "root", "php_tarefas");
+    $result = mysqli_query($link, "SELECT * FROM tarefas");
+    $tarefas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $tarefas;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Tarefas</title>
+    <style>
+        table {
+            border: 1px;
+            border-style: solid;
+            border-collapse: collapse;
+            align-items: center;
+        }
+
+        table th, tr td{
+            border: 1px;
+            border-style: solid;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
@@ -85,5 +106,49 @@ if (!empty($_POST)) {
         </form>
     </div>
     <br>
+
+    <div>
+        <?php
+            $tarefas = getTarefas();
+            if (count($tarefas) > 0) {
+                echo "<table>";
+                    echo "<tr>";
+                        echo "<th>";
+                            echo "#ID";
+                        echo "</th>";
+                        echo "<th>";
+                            echo "Titulo";
+                        echo "</th>";
+                        echo "<th>";
+                            echo "Descrição";
+                        echo "</th>";
+                        echo "<th>";
+                            echo "Concluída?";
+                        echo "</th>";
+                    echo "</tr>";
+                    foreach($tarefas as $tarefa) {
+                        echo "<tr>";
+                            echo "<td>";
+                                echo $tarefa['id'];
+                            echo "</td>";
+                            echo "<td>";
+                                echo $tarefa['titulo'];
+                            echo "</td>";
+                            echo "<td>";
+                            echo $tarefa['descricao'];
+                            echo "</td>";
+                            echo "<td>";
+                            if ($tarefa['concluida'] == 1) {
+                                echo "✓";
+                            } else {
+                                echo "✖";
+                            }
+                            echo "</td>";
+                        echo "</tr>";
+                    }
+                echo "</table>";
+            }
+        ?>
+    </div>
 </body>
 </html>
