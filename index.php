@@ -2,13 +2,13 @@
 
     session_start();
 
-    $host = 'database';
-    $db = 'app-controle-financeiro';
+    $host = 'controle-financeiro-mysql';
+    $db = 'controle-financeiro-database';
     $user = 'root';
     $pass = 'root';
 
     $dsn = "mysql:host=$host;dbname=$db";
-    $conexao = new PDO($dsn, $user,$pass);
+    // $conexao = new PDO($dsn, $user,$pass);
 
     $emEdicao = false;
 

@@ -2,8 +2,8 @@ version: '3.5'
 
 services:
 
-  php-apache:
-    container_name: php-apache
+  php-apache-controle-financeiro:
+    container_name: controle-financeiro-apache-php
     image: webdevops/php-apache:7.4
     volumes:
       - .:/var/www/html
@@ -12,26 +12,26 @@ services:
     ports:
       - 80:80
     depends_on:
-      - database
+      - controle-financeiro-mysql
 
-  database:
-    container_name: database
+  controle-financeiro-mysql:
+    container_name: controle-financeiro-mysql
     image: mysql:5.7
     ports:
       - "3306:3306"
     volumes:
       - database:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=php_lancamentos
+      - MYSQL_DATABASE=controle-financeiro-database
       - MYSQL_ROOT_PASSWORD=root
 
-  phpmyadmin:
-    container_name: phpmyadmin
+  controle-financeiro-phpmyadmin:
+    container_name: controle-financeiro-phpmyadmin
     image: phpmyadmin
     links:
-      - database
+      - controle-financeiro-mysql
     depends_on:
-      - database
+      - controle-financeiro-mysql
     ports:
       - 8080:80
     environment:

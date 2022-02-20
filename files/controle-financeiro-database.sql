@@ -2,8 +2,8 @@
 -- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: database
--- Generation Time: Feb 19, 2022 at 08:01 PM
+-- Host: controle-financeiro-mysql
+-- Generation Time: Feb 20, 2022 at 06:42 PM
 -- Server version: 5.7.37
 -- PHP Version: 7.4.27
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `app-controle-financeiro`
+-- Database: `controle-financeiro-database`
 --
 
 -- --------------------------------------------------------
@@ -29,10 +29,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `lancamentos` (
   `id` int(11) NOT NULL,
-  `nome` varchar(250) NOT NULL,
-  `tipo` varchar(250) NOT NULL,
+  `titulo` varchar(250) NOT NULL,
+  `descricao` varchar(500) NOT NULL,
   `valor` float NOT NULL,
-  `operacao` varchar(1) NOT NULL
+  `operacao` varchar(1) NOT NULL,
+  `data_lancamento` date NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `update_at` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
