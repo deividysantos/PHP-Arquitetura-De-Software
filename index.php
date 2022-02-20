@@ -192,6 +192,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle Financeiro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         table {
             border: 1px solid black;
@@ -203,7 +204,7 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-indigo-300 p-4">
     <?php
         $message = getMessage();
         if($message) {
@@ -215,39 +216,43 @@
     ?>
     <div>
         <form action="index.php" method="POST">
-            <div>
-                <label for="nome">Nome: </label>
-                <input type="text" name="nome" maxlength="250" required value="<?= isset($lancamento['nome'])?$lancamento['nome']:'' ?>">
+            <h2 class="min-w-min text-center text-xl">Novo ançamento</h2>
+
+            <div class="max-w-min mx-auto mt-8">
+                <div>
+                    <label for="nome">Nome: </label>
+                    <input type="text" name="nome" maxlength="250" required value="<?= isset($lancamento['nome'])?$lancamento['nome']:'' ?>">
+                </div>
+                <div>
+                    <label for="nome">Tipo: </label>
+                    <input type="text" name="tipo" maxlength="250" required value="<?= isset($lancamento['tipo'])?$lancamento['tipo']:'' ?>">            
+                </div>
+                <div>
+                    <label for="valor">Valor: </label>
+                    <input type="number" step="any" name="valor" minlength="0.1" maxlength="250" required value="<?= isset($lancamento['valor'])?$lancamento['valor']:'' ?>">
+                </div>
+                <label for="operacao">Valor: </label>
+                <select name="operacao" id="">
+                    <option value="R" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'R'? 'selected': '' ?> >Receita</option>
+                    <option value="D" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'D'? 'selected': '' ?> >Despesa</option>
+                </select>
+                <?php if($emEdicao) : ?>
+                <div>
+                    <input type="submit" value="Atualizar">
+                    <input type="hidden" name="action" value="atualizar">
+                    <input type="hidden" name="id" value="<?= $lancamento['id'] ?> ">
+                    <a href="index.php">Cancelar</a>
+                </div>
+                <?php else : ?>
+                <div class="text-center">
+                    <input class="duration-300 cursor-pointer rounded text-white bg-black border-2 border-black px-4 py-2 mt-4 hover:bg-white hover:text-black" type="submit" value="Inserir">
+                    <input type="hidden" name="action" value="inserir">
+                </div>
+                <?php endif; ?>
             </div>
-            <div>
-                <label for="nome">Tipo: </label>
-                <input type="text" name="tipo" maxlength="250" required value="<?= isset($lancamento['tipo'])?$lancamento['tipo']:'' ?>">            
-            </div>
-            <div>
-                <label for="valor">Valor: </label>
-                <input type="number" step="any" name="valor" minlength="0.1" maxlength="250" required value="<?= isset($lancamento['valor'])?$lancamento['valor']:'' ?>">
-            </div>
-            <label for="operacao">Valor: </label>
-            <select name="operacao" id="">
-                <option value="R" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'R'? 'selected': '' ?> >Receita</option>
-                <option value="D" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'D'? 'selected': '' ?> >Despesa</option>
-            </select>
-            <?php if($emEdicao) : ?>
-            <div>
-                <input type="submit" value="Atualizar">
-                <input type="hidden" name="action" value="atualizar">
-                <input type="hidden" name="id" value="<?= $lancamento['id'] ?> ">
-                <a href="index.php">Cancelar</a>
-            </div>
-            <?php else : ?>
-            <div>
-                <input type="submit" value="Inserir">
-                <input type="hidden" name="action" value="inserir">
-            </div>
-            <?php endif; ?>
         </form>
     </div>
-        <?php  
+    <?php  
             $lancamentos = getLancamentos();
             if(count($lancamentos) > 0) {
 
