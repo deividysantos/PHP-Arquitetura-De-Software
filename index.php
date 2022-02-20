@@ -220,8 +220,8 @@
 
             <div class="max-w-min mx-auto mt-8">
                 <div>
-                    <label for="nome">Nome: </label>
-                    <input type="text" name="nome" maxlength="250" required value="<?= isset($lancamento['nome'])?$lancamento['nome']:'' ?>">
+                    <label for="nome">Titulo: </label>
+                    <input type="text" name="titulo" maxlength="250" required value="<?= isset($lancamento['nome'])?$lancamento['nome']:'' ?>">
                 </div>
                 <div>
                     <label for="nome">Tipo: </label>
