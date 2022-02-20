@@ -1,5 +1,7 @@
 <?php
 
+    
+    // 👀 <- I see you...
     session_start();
 
     $host = 'controle-financeiro-mysql';
