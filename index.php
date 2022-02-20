@@ -2,13 +2,15 @@
 
     session_start();
 
+    dd($_POST);
+
     $host = 'controle-financeiro-mysql';
     $db = 'controle-financeiro-database';
     $user = 'root';
     $pass = 'root';
 
     $dsn = "mysql:host=$host;dbname=$db";
-    // $conexao = new PDO($dsn, $user,$pass);
+    $conexao = new PDO($dsn, $user,$pass);
 
     $emEdicao = false;
 
@@ -21,19 +23,22 @@
                 if(validarLancamento()) 
                 {
                     $lancamento = [];
-                    $lancamento['nome'] = $_POST['nome'];
-                    $lancamento['tipo'] = $_POST['tipo'];
+                    $lancamento['titulo'] = $_POST['titulo'];
+                    $lancamento['descricao'] = $_POST['descricao'];
                     $lancamento['valor'] = $_POST['valor'];
+                    $lancamento['data_lancamento'] = $_POST['data_lancamento'];
                     $lancamento['operacao'] = $_POST['operacao'];
 
-                    $sql = 'INSERT INTO lancamentos (nome, tipo, valor, operacao) VALUES (?, ?, ?, ?)';
+                    $sql = 'INSERT INTO lancamentos (titulo, descricao, valor, data_lancamento, operacao) VALUES (?, ?, ?, ?, ?)';
 
                     $statement = $conexao->prepare($sql);
                     
-                    $statement->bindValue(1, $lancamento['nome']);
-                    $statement->bindValue(2, $lancamento['tipo']);
+                    $statement->bindValue(1, $lancamento['titulo']);
+                    $statement->bindValue(2, $lancamento['descricao']);
                     $statement->bindValue(3, $lancamento['valor']);
-                    $statement->bindValue(4, $lancamento['operacao']);
+                    $statement->bindValue(4, $lancamento['data_lancamento']);
+                    $statement->bindValue(5, $lancamento['operacao']);
+
 
                     if ($statement->execute()) 
                     {
@@ -98,21 +103,21 @@
                 break;
                 
             case 'atualizar' :
-                if (!empty($_POST['id']))
+                if (!empty($_POST['id']) && validarLancamento())
                 {
                     $id = $_POST['id'];
                     $lancamento = [];
-                    $lancamento['nome'] = $_POST['nome'];
-                    $lancamento['tipo'] = $_POST['tipo'];
+                    $lancamento['titulo'] = $_POST['titulo'];
+                    $lancamento['descricao'] = $_POST['descricao'];
                     $lancamento['valor'] = $_POST['valor'];
                     $lancamento['operacao'] = $_POST['operacao'];
 
-                    $sql = "UPDATE lancamentos SET nome = ?, tipo = ?, valor = ?, operacao = ? WHERE id = ?";
+                    $sql = "UPDATE lancamentos SET titulo = ?, descricao = ?, valor = ?, operacao = ? WHERE id = ?";
 
                     $statement = $conexao->prepare($sql);
 
-                    $statement->bindValue(1, $lancamento['nome']);
-                    $statement->bindValue(2, $lancamento['tipo']);
+                    $statement->bindValue(1, $lancamento['titulo']);
+                    $statement->bindValue(2, $lancamento['descricao']);
                     $statement->bindValue(3, $lancamento['valor']);
                     $statement->bindValue(4, $lancamento['operacao']);
                     $statement->bindValue(5, $id);
@@ -134,9 +139,11 @@
 
     function validarLancamento() 
     {
-        if (!(isset($_POST['nome']) && strlen($_POST['nome']) > 0 && strlen($_POST['nome']) <= 250))
+        if (!(isset($_POST['titulo']) && strlen($_POST['titulo']) > 0 && strlen($_POST['titulo']) <= 250))
             return false;
-        if (!(isset($_POST['tipo']) && strlen($_POST['tipo']) > 0 && strlen($_POST['tipo']) <= 250))
+        if (!(isset($_POST['descricao']) && strlen($_POST['descricao']) > 0 && strlen($_POST['descricao']) <= 250))
+            return false;
+        if (!(isset($_POST['data_lancamento'])))
             return false;
         if (!(isset($_POST['valor'])) && is_numeric($_POST['valor']) && $_POST['valor'] !== 0)
             return false;
@@ -183,6 +190,13 @@
         return [];
     }
 
+    function dd($var) 
+    {
+        echo "<pre>";
+        var_dump($var);
+        echo "</pre>";
+    }
+
     
 ?>
 
@@ -220,22 +234,28 @@
 
             <div class="max-w-min mx-auto mt-8">
                 <div>
-                    <label for="nome">Titulo: </label>
-                    <input type="text" name="titulo" maxlength="250" required value="<?= isset($lancamento['nome'])?$lancamento['nome']:'' ?>">
+                    <label for="titulo">Titulo: </label>
+                    <input type="text" name="titulo" maxlength="250" required value="<?= isset($lancamento['titulo'])?$lancamento['titulo']:'' ?>">
                 </div>
                 <div>
-                    <label for="nome">Tipo: </label>
-                    <input type="text" name="tipo" maxlength="250" required value="<?= isset($lancamento['tipo'])?$lancamento['tipo']:'' ?>">            
+                    <label for="Descricao">Tipo: </label>
+                    <input type="text" name="descricao" maxlength="250" required value="<?= isset($lancamento['descricao'])?$lancamento['descricao']:'' ?>">            
                 </div>
                 <div>
                     <label for="valor">Valor: </label>
                     <input type="number" step="any" name="valor" minlength="0.1" maxlength="250" required value="<?= isset($lancamento['valor'])?$lancamento['valor']:'' ?>">
                 </div>
-                <label for="operacao">Valor: </label>
-                <select name="operacao" id="">
-                    <option value="R" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'R'? 'selected': '' ?> >Receita</option>
-                    <option value="D" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'D'? 'selected': '' ?> >Despesa</option>
-                </select>
+                <div>
+                    <label for="data_lancamento">Data Lançamento: </label>
+                    <input type="date" name="data_lancamento" value="<?= date('Y-m-d') ?>" required>
+                </div>
+                <div>
+                    <label for="operacao">Valor: </label>
+                    <select name="operacao" id="">
+                        <option value="R" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'R'? 'selected': '' ?> >Receita</option>
+                        <option value="D" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'D'? 'selected': '' ?> >Despesa</option>
+                    </select>
+                </div>
                 <?php if($emEdicao) : ?>
                 <div>
                     <input type="submit" value="Atualizar">
@@ -255,14 +275,17 @@
     <?php  
             $lancamentos = getLancamentos();
             if(count($lancamentos) > 0) {
+                echo "<pre>";
+                var_dump($lancamentos);
+                echo "</pre>";
 
                 echo "<div>";
                 echo "<table>";
                 foreach ($lancamentos as $lancamento): ?>
                     <tr>
                         <td><?= $lancamento['id'] ?></td>
-                        <td><?= $lancamento['nome']?></td>
-                        <td><?= $lancamento['tipo']?></td>
+                        <td><?= $lancamento['titulo']?></td>
+                        <td><?= $lancamento['descricao']?></td>
                         <td><?= $lancamento['valor']?></td>
                         <td><?= $lancamento['operacao']?></td>
                         <td>
