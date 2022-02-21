@@ -245,60 +245,70 @@
             border-collapse: collapse;
         }
 
-        tr td {
+        tr, td, th {
             border: 1px solid black;
+            text-align: center;
+            padding: 5px;
         }
     </style>
 </head>
-<body class="bg-indigo-300 p-4">
-    <?php
-        $message = getMessage();
-        if ($message) {
-            echo "<pre>";
-            var_dump($message);
-            echo "</pre>";
-            unsetMessage();
-        }
-
-    ?>
+<body class="bg-indigo-100 pb-8">
     <div>
-        <form action="index.php" method="POST">
+        <form class=" max-w-min mx-auto bg-fuchsia-200 p-8 rounded-lg mt-8" action="index.php" method="POST">
             <h2 class="min-w-min text-center text-xl">Novo Lançamento</h2>
 
-            <div class="max-w-min mx-auto mt-8">
+            <?php
+        $message = getMessage();
+        if ($message) {
+            
+            if($message['type'] == 'success')
+            {
+                echo '<div class="mt-4 mx-auto py-2 rounded bg-green-300 text-center">' . $message["text"] . '</div>';
+            }
+
+            if($message['type'] == 'error')
+            {
+                echo '<div class="mt-4 w-60 mx-auto px-4 rounded bg-red-300 text-center"> ' . $message["text"] . '</div>';
+            }
+
+            unsetMessage();
+        }?>
+
+            <div class="mt-8">
                 <div>
                     <label for="titulo">Titulo: </label>
-                    <input type="text" name="titulo" maxlength="250" required value="<?= isset($lancamento['titulo'])?$lancamento['titulo']:'' ?>">
+                    <input class="h-8 pl-2 outline-none border-b-2 border-transparent focus:border-black" type="text" id="titulo" name="titulo" maxlength="250" required value="<?= isset($lancamento['titulo'])?$lancamento['titulo']:'' ?>">
                 </div>
-                <div>
-                    <label for="Descricao">Tipo: </label>
-                    <input type="text" name="descricao" maxlength="250" required value="<?= isset($lancamento['descricao'])?$lancamento['descricao']:'' ?>">            
+                <div class="mt-2">
+                    <label  for="descricao">Tipo: </label>
+                    <input class="h-8 pl-2 outline-none border-b-2 border-transparent focus:border-black" type="text" id="descricao" name="descricao" maxlength="250" required value="<?= isset($lancamento['descricao'])?$lancamento['descricao']:'' ?>">            
                 </div>
-                <div>
+                <div class="mt-2">
                     <label for="valor">Valor: </label>
-                    <input type="number" step="any" name="valor" minlength="0.1" maxlength="250" required value="<?= isset($lancamento['valor'])?$lancamento['valor']:'' ?>">
+                    <input class="h-8 pl-2 outline-none border-b-2 border-transparent focus:border-black" type="number" id="valor" step="any" name="valor" minlength="0.1" maxlength="250" required value="<?= isset($lancamento['valor'])?$lancamento['valor']:'' ?>">
                 </div>
-                <div>
+                <div class="mt-2">
                     <label for="data_lancamento">Data Lançamento: </label>
-                    <input type="date" name="data_lancamento" value="<?= isset($lancamento['data_lancamento'])? $lancamento['data_lancamento'] : date('Y-m-d') ?>" required>
+                    <input class="h-8 pl-2 outline-none border-b-2 border-transparent focus:border-black" type="date" id="data_lancamento" name="data_lancamento" value="<?= isset($lancamento['data_lancamento'])? $lancamento['data_lancamento'] : date('Y-m-d') ?>" required>
                 </div>
-                <div>
-                    <label for="operacao">Valor: </label>
-                    <select name="operacao" id="">
+                <div class="mt-2">
+                    <label for="operacao">Operação: </label>
+                    <br>
+                    <select class="h-8 pl-2" name="operacao" id="operacao">
                         <option value="R" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'R'? 'selected': '' ?> >Receita</option>
                         <option value="D" <?= !empty($lancamento['operacao']) && $lancamento['operacao'] == 'D'? 'selected': '' ?> >Despesa</option>
                     </select>
                 </div>
                 <?php if($emEdicao) : ?>
-                <div>
-                    <input type="submit" value="Atualizar">
+                <div class="flex space-x mt-2">
+                    <input class="duration-300 cursor-pointer rounded text-white bg-black border-b-2 border-black px-4 py-2 mt-4 mr-auto hover:px-6" type="submit" value="Atualizar">
                     <input type="hidden" name="action" value="atualizar">
                     <input type="hidden" name="id" value="<?= $lancamento['id'] ?> ">
-                    <a href="index.php">Cancelar</a>
+                    <a class="mt-auto py-2 hover:underline" href="index.php">Cancelar</a>
                 </div>
                 <?php else : ?>
-                <div class="text-center">
-                    <input class="duration-300 cursor-pointer rounded text-white bg-black border-2 border-black px-4 py-2 mt-4 hover:bg-white hover:text-black" type="submit" value="Inserir">
+                <div class="text-center mt-2">
+                    <input class="duration-300 cursor-pointer rounded text-white bg-black border-b-2 border-black px-4 py-2 mt-4 hover:px-6" type="submit" value="Inserir">
                     <input type="hidden" name="action" value="inserir">
                 </div>
                 <?php endif; ?>
@@ -309,7 +319,7 @@
             $lancamentos = getLancamentos();
             if(count($lancamentos) > 0): ?>
             <div>
-                <table>
+                <table class="mx-auto mt-8">
                     <tr>
                         <th># ID</th>
                         <th>Título</th>
@@ -327,13 +337,13 @@
                             <td>
                                 <form action="index.php" method="POST">
                                     <input type="hidden" name="id" value="<?= $lancamento['id'] ?>">
-                                    <input type="submit" value="excluir" name="action">
+                                    <input class="duration-300 cursor-pointer bg-red-400 rounded text-white p-2 hover:bg-red-500 capitalize" type="submit" value="excluir" name="action">
                                 </form>
                             </td>
                             <td>
                                 <form action="index.php" method="POST">
                                     <input type="hidden" name="id" value="<?= $lancamento['id'] ?>">
-                                    <input type="submit" value="editar" name="action">
+                                    <input class="duration-300 cursor-pointer bg-yellow-400 rounded text-white p-2 hover:bg-yellow-500 capitalize" type="submit" value="editar" name="action">
                                 </form>
                             </td>
                             
@@ -342,6 +352,5 @@
                 <table>
             </div>
             <?php endif; ?>
-    </div>
 </body>
 </html>
