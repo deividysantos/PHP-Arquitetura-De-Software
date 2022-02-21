@@ -20,27 +20,26 @@
         switch ($_POST['action']) 
         {
             case 'inserir' : 
-                if(validarLancamento()) 
-                {
-                    $lancamento = [];
-                    $lancamento['titulo'] = $_POST['titulo'];
-                    $lancamento['descricao'] = $_POST['descricao'];
-                    $lancamento['valor'] = $_POST['valor'];
-                    $lancamento['data_lancamento'] = $_POST['data_lancamento'];
-                    $lancamento['operacao'] = $_POST['operacao'];
-
-                    if(insertLancamento($lancamento))
-                    {
-                        setMessage('success', 'Inserido com sucesso.');
-                    } 
-                    else 
-                    {
-                        setMessage('error', 'Erro na inserção.');
-                    }
-                } else
-                {
+                if(!validarLancamento()) 
                     setMessage('error', 'Dados inseridos inválidos.');
+
+                $lancamento = [
+                    'titulo'            => $_POST['titulo'],
+                    'descricao'         => $_POST['descricao'],
+                    'valor'             => $_POST['valor'],
+                    'data_lancamento'   => $_POST['data_lancamento'],
+                    'operacao'          => $_POST['operacao']
+                ];
+
+                if(insertLancamento($lancamento))
+                {
+                    setMessage('success', 'Inserido com sucesso.');
+                } 
+                else 
+                {
+                    setMessage('error', 'Erro na inserção.');
                 }
+                
                 header('Location: index.php');
                 die();
                 break;
@@ -117,9 +116,10 @@
 
     function setMessage ($type, $text) 
     {
-        $message = [];
-        $message['type'] = $type;
-        $message['text'] = $text;
+        $message = [
+            'type' => $type,
+            'text' => $text,
+        ];
 
         $_SESSION['message'] = $message;
     }
@@ -160,20 +160,16 @@
         
         $statement = $conexao->prepare($sql);
 
+        if(!$statement)
+            return false;
+
         $statement->bindValue(1, $lancamento['titulo']);
         $statement->bindValue(2, $lancamento['descricao']);
         $statement->bindValue(3, $lancamento['valor']);
         $statement->bindValue(4, $lancamento['data_lancamento']);
         $statement->bindValue(5, $lancamento['operacao']);
 
-        if ($statement->execute()) 
-        {
-            return true;
-        }
-        else 
-        {
-            return false;
-        }
+         return $statement->execute();
     }
 
     function deletarLancamento($id)
@@ -186,14 +182,7 @@
 
         $statement->bindValue(1, $id);
 
-        if ($statement->execute())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return $statement->execute();
     }
 
     function getLancamento($id)
@@ -210,11 +199,9 @@
         {
             $lancamento = $statement->fetch(PDO::FETCH_ASSOC);
             return $lancamento;
-        } else
-        {
-            return false;
         }
 
+        return false;
     }
 
     function updateLancamento($id, $lancamento)
@@ -232,14 +219,7 @@
         $statement->bindValue(5, $lancamento['operacao']);
         $statement->bindValue(6, $id);
 
-        if ($statement->execute())
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
-
+        return $statement->execute();
     }
 
     function dd($var) 
