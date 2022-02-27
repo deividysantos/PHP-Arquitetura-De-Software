@@ -20,8 +20,11 @@
         switch ($_POST['action']) 
         {
             case 'inserir' : 
-                if(!validarLancamento()) 
+                if(!validarLancamento())
+                {
                     setMessage('error', 'Dados inseridos inválidos.');
+                    redictTo('index.php');
+                }
 
                 $lancamento = [
                     'titulo'            => $_POST['titulo'],
@@ -40,8 +43,7 @@
                     setMessage('error', 'Erro na inserção.');
                 }
                 
-                header('Location: index.php');
-                die();
+                redictTo('index.php');
                 break;
             
             case 'excluir' :
@@ -58,8 +60,7 @@
                         setMessage('error', 'Erro na exclusão.');
                     }
                 }
-                header('Location: index.php');
-                die();
+                redictTo('index.php');
                 break;
                 
             case 'editar' :
@@ -77,12 +78,14 @@
                 if (!empty($_POST['id']) && validarLancamento())
                 {
                     $id = $_POST['id'];
-                    $lancamento = [];
-                    $lancamento['titulo'] = $_POST['titulo'];
-                    $lancamento['descricao'] = $_POST['descricao'];
-                    $lancamento['data_lancamento'] = $_POST['data_lancamento'];
-                    $lancamento['valor'] = $_POST['valor'];
-                    $lancamento['operacao'] = $_POST['operacao'];
+
+                    $lancamento = [
+                        'titulo'            => $_POST['titulo'],
+                        'descricao'         => $_POST['descricao'],
+                        'valor'             => $_POST['valor'],
+                        'data_lancamento'   => $_POST['data_lancamento'],
+                        'operacao'          => $_POST['operacao']
+                    ];
 
                     if (updateLancamento($id, $lancamento))
                     {
@@ -92,8 +95,7 @@
                         setMessage('error', 'Erro ao atualizar.');
                     }
                 }
-                header('Location: index.php');
-                die();
+                redictTo('index.php');
                 break;
         }
     }
@@ -220,6 +222,12 @@
         $statement->bindValue(6, $id);
 
         return $statement->execute();
+    }
+
+    function redictTo($route)
+    {
+        header('Location: ' . $route);
+        die();
     }
 
     function dd($var) 
